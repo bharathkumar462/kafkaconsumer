@@ -20,31 +20,28 @@ public class ConsumerService {
     @KafkaListener(topics = "student")
     public void readMessage(@Payload String msg,
                             @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key){
-
-        if(key.equals("update")) {
+        String[] data = msg.split(",");
+        if(data.length==3) {
             Customer customer = new Customer();
-            String[] data = msg.split(",");
             customer.setId(Long.parseLong(data[0]));
             customer.setName(data[1]);
             customer.setPhoneNumber(data[2]);
             customerRepo.save(customer);
             System.out.println("msg from the kafka : " + msg + " key : " + key);
         }
-        else if(key.equals("insert"))
+        else if(data.length==2)
         {
             Customer customer = new Customer();
-            String[] data = msg.split(",");
+            customer.setId(Long.parseLong(key));
             customer.setName(data[0]);
             customer.setPhoneNumber(data[1]);
             customerRepo.save(customer);
             System.out.println("msg from the kafka : " + msg + " key : " + key);
 
         }
-        else if(key.equals("delete"))
+        else if(data.length==1)
         {
-
             customerRepo.deleteById(Long.parseLong(msg));
-
         }
     }
 }
