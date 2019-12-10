@@ -23,10 +23,13 @@ public class ConsumerService {
         String[] data = msg.split(",");
         if(data.length==3) {
             Customer customer = new Customer();
-            customer.setId(Long.parseLong(data[0]));
-            customer.setName(data[1]);
-            customer.setPhoneNumber(data[2]);
-            customerRepo.save(customer);
+            if(customerRepo.findById(Long.parseLong(data[0])).isPresent())
+            {
+                customer.setId(Long.parseLong(data[0]));
+                customer.setName(data[1]);
+                customer.setPhoneNumber(data[2]);
+                customerRepo.save(customer);
+            }
             System.out.println("msg from the kafka : " + msg + " key : " + key);
         }
         else if(data.length==2)
@@ -41,7 +44,10 @@ public class ConsumerService {
         }
         else if(data.length==1)
         {
-            customerRepo.deleteById(Long.parseLong(msg));
+            if(customerRepo.findById(Long.parseLong(data[0])).isPresent())
+            {
+                customerRepo.deleteById(Long.parseLong(msg));
+            }
         }
     }
 }
