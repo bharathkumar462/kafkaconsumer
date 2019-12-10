@@ -18,36 +18,38 @@ public class ConsumerService {
 
     @KafkaHandler
     @KafkaListener(topics = "student")
-    public void readMessage(@Payload String msg,
+    public void readMessage(@Payload Customer msg,
                             @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key){
-        String[] data = msg.split(",");
-        if(data.length==3) {
-            Customer customer = new Customer();
-            if(customerRepo.findById(Long.parseLong(data[0])).isPresent())
-            {
-                customer.setId(Long.parseLong(data[0]));
-                customer.setName(data[1]);
-                customer.setPhoneNumber(data[2]);
-                customerRepo.save(customer);
-            }
-            System.out.println("msg from the kafka : " + msg + " key : " + key);
-        }
-        else if(data.length==2)
-        {
-            Customer customer = new Customer();
-            customer.setId(Long.parseLong(key));
-            customer.setName(data[0]);
-            customer.setPhoneNumber(data[1]);
-            customerRepo.save(customer);
-            System.out.println("msg from the kafka : " + msg + " key : " + key);
+//        String[] data = msg.split(",");
+//        if(data.length==3) {
+//            Customer customer = new Customer();
+//            if(customerRepo.findById(Long.parseLong(data[0])).isPresent())
+//            {
+//                customer.setId(Long.parseLong(data[0]));
+//                customer.setName(data[1]);
+//                customer.setPhoneNumber(data[2]);
+//                customerRepo.save(customer);
+//            }
+//            System.out.println("msg from the kafka : " + msg + " key : " + key);
+//        }
+//        else if(data.length==2)
+//        {
+//            Customer customer = new Customer();
+//            customer.setId(Long.parseLong(key));
+//            customer.setName(data[0]);
+//            customer.setPhoneNumber(data[1]);
+//            customerRepo.save(customer);
+//            System.out.println("msg from the kafka : " + msg + " key : " + key);
+//
+//        }
+//        else if(data.length==1)
+//        {
+//            if(customerRepo.findById(Long.parseLong(data[0])).isPresent())
+//            {
+//                customerRepo.deleteById(Long.parseLong(msg));
+//            }
+//        }
 
-        }
-        else if(data.length==1)
-        {
-            if(customerRepo.findById(Long.parseLong(data[0])).isPresent())
-            {
-                customerRepo.deleteById(Long.parseLong(msg));
-            }
-        }
+        System.out.println("msg from the kafka : " + msg + " key : " + key);
     }
 }
