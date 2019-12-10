@@ -1,9 +1,8 @@
 package com.example.consumer0.model;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 @Entity
 public class Customer {
@@ -11,7 +10,8 @@ public class Customer {
     Long id;
     String name;
     String phoneNumber;
-
+    @Transient
+    String eventType;
 
     @Override
     public String toString() {
@@ -20,6 +20,14 @@ public class Customer {
                 ", name='" + name + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
+    }
+
+    public String getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
     }
 
     public Long getId() {

@@ -15,41 +15,33 @@ public class ConsumerService {
     @Autowired
     CustomerRepo customerRepo;
 
-
+    final String CREATE_CUSTOMER="insert";
+    final String UPDATE_CUSTOMER="update";
+    final String DELETE_CUSTOMER="delete";
     @KafkaHandler
     @KafkaListener(topics = "student")
     public void readMessage(@Payload Customer msg,
                             @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key){
-//        String[] data = msg.split(",");
-//        if(data.length==3) {
-//            Customer customer = new Customer();
-//            if(customerRepo.findById(Long.parseLong(data[0])).isPresent())
-//            {
-//                customer.setId(Long.parseLong(data[0]));
-//                customer.setName(data[1]);
-//                customer.setPhoneNumber(data[2]);
-//                customerRepo.save(customer);
-//            }
-//            System.out.println("msg from the kafka : " + msg + " key : " + key);
-//        }
-//        else if(data.length==2)
-//        {
-//            Customer customer = new Customer();
-//            customer.setId(Long.parseLong(key));
-//            customer.setName(data[0]);
-//            customer.setPhoneNumber(data[1]);
-//            customerRepo.save(customer);
-//            System.out.println("msg from the kafka : " + msg + " key : " + key);
-//
-//        }
-//        else if(data.length==1)
-//        {
-//            if(customerRepo.findById(Long.parseLong(data[0])).isPresent())
-//            {
-//                customerRepo.deleteById(Long.parseLong(msg));
-//            }
-//        }
+        if(msg.getEventType().equals(UPDATE_CUSTOMER)) {
+            if(customerRepo.findById(msg.getId()).isPresent())
+            {
+                customerRepo.save(msg);
+            }
+            System.out.println("msg from the kafka : " + msg + " key : " + key);
+        }
+        else if(msg.getEventType().equals(CREATE_CUSTOMER))
+        {
+            customerRepo.save(msg);
+            System.out.println("msg from the kafka : " + msg + " key : " + key);
 
-        System.out.println("msg from the kafka : " + msg + " key : " + key);
+        }
+        else if(msg.getEventType().equals(DELETE_CUSTOMER))
+        {
+            if(customerRepo.findById(msg.getId()).isPresent())
+            {
+                customerRepo.deleteById(msg.getId());
+            }
+
+        }
     }
 }
